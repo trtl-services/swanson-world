@@ -9,6 +9,8 @@ const permission = require('permission')
 const db = require('../utils/utils').knex
 const { check } = require('express-validator/check')
 const validateInput = require('../middleware/validateInput')
+const crypto = require('crypto')
+const TS = require('../utils/utils').trtlServices
 
 // Items View
 router.get('/', permission(), async function(req, res, next) {
@@ -49,29 +51,57 @@ router.get('/new', permission(), function(req, res, next) {
 
 router.post('/new', permission(),
   [
-    check('termOne')
-    .not().isEmpty(),
-
-    check('termTwo')
-    .not().isEmpty(),
-
-    check('termThree')
+    check('name')
     .not().isEmpty()
+    .trim(),
+
+    check('description')
+    .not().isEmpty()
+    .trim()
+    .unescape(),
+
+    check('category')
+    .not().isEmpty(),
+
+    check('price')
+    .not().isEmpty()
+    .isFloat(),
+
+    check('content')
+    .not().isEmpty()
+    .unescape(),
+
+    check('license')
+    //.not().isEmpty()
+
   ],
   validateInput,
   async function(req, res, next) {
     try {
-      await db('users')
-        .update({
-          terms: 1
-        })
-        .where('id', req.user.id)
-        .limit(1)
 
-      res.redirect('/dashboard')
+      const paymentId = crypto
+      .randomBytes(Math.ceil(len / 2))
+      .toString('hex')
+      .slice(0, 64) 
+
+      const integratedAddress = await TS.integratedAddress(req.user.address, paymentId)
+
+      await db('users')
+        .insert({
+            userId: req.user.id,
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            content: req.body.content,
+            license: req.body.license,
+            paymentId: paymentId,
+            integratedAddress: integratedAddress
+        })
+
+      res.redirect('/items')
     } catch (err) {
-      req.flash('error', 'Please agree to all terms.')
-      res.redirect('/welcome')
+      req.flash('error', 'An error occured adding a new item.')
+      res.redirect('/items')
     }
   })
 

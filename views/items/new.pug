@@ -11,26 +11,76 @@ block content
 				.box.has-background-white
 					.field
 						h1.subtitle Name
-						input.input.is-large.is-fullwidth(type='text' name='name')
+						input.input.is-medium.is-fullwidth(type='text' name='name')
+
+					br
+
+					.field
+						h1.subtitle Short Description
+						input.input.is-medium.is-fullwidth(type='text' name='description')
+
+					br
 
 					.field
 						h1.subtitle Category
-						input.input.is-large.is-fullwidth(type='text' name='name')
+						.select.is-medium.is-fullwidth
+							select(name='category')
+								option(value='Graphics') Graphics
+								option(value='Vectors') Vectors
+								option(value='Scripts') Scripts
+								option(value='Themes') Themes
+					
+					br
 
 					.field
-						h1.subtitle Description
-						input.input.is-large.is-fullwidth(type='text' name='name')
+						h1.subtitle Price
+							input.input.is-medium.is-fullwidth(type='number' name='price' min=0 step=0.01)
+
+					
+					br
 
 					.field
-						h1.subtitle 
-						input.input.is-large.is-fullwidth(type='text' name='name')
+						h1.subtitle Content
+						#standalone-container
+							#toolbar-container
+								span.ql-formats
+									select.ql-size
+								span.ql-formats
+									button.ql-bold
+									button.ql-italic
+									button.ql-underline
+									button.ql-strike
+								span.ql-formats
+									select.ql-color
+								span.ql-formats
+									button.ql-script(value='sub')
+									button.ql-script(value='super')
+								span.ql-formats
+									button.ql-blockquote
+									button.ql-code-block
+								span.ql-formats
+									button.ql-list(value='ordered')
+									button.ql-list(value='bullet')
+									button.ql-indent(value='-1')
+									button.ql-indent(value='+1')
+								span.ql-formats
+									button.ql-link
+									button.ql-image
+									button.ql-video
+							#editor-container
 
+					br
+
+					.field
+						h1.subtitle License
+						.select.is-medium.is-fullwidth
+							select(name='license')
 
 					if user.verified === 1
 						.field
 							.control.has-icons-left
-								input.input.is-large.is-fullwidth.has-text-centered(type='text' name='token' placeholder='000000')
-								span.icon.is-large.is-left
+								input.input.is-medium.is-fullwidth.has-text-centered(type='text' name='token' placeholder='000000')
+								span.icon.is-medium.is-left
 									i.icon-key
 			
 		.level
@@ -38,3 +88,9 @@ block content
 				a.button.is-danger.is-outlined.is-large(href='/items/') Cancel
 			.left-right
 				button.button.is-success.is-outlined.is-large(type='submit') Update
+
+	script.
+		const editor = new Quill('#editor-container', {
+			modules: { toolbar: '#toolbar-container' },
+			theme: 'snow'
+		})
