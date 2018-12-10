@@ -1,0 +1,77 @@
+extends ../includes/layout_default
+
+block content
+	.level
+		.level-left
+			p.is-size-3.title.is=title
+		.level-right
+			form(action='/activity/export' method='post')
+				button.button.is-dark.is-outlined.modal-button.is-medium.tooltip.is-tooltip-top(data-tooltip='Export to CSV' type='submit')
+					span.icon.is-medium
+						i.icon-cloud-download
+
+	section.box.has-background-light.is-paddingless
+		table.table.is-striped.is-fullwidth.is-size-5
+			thead.has-background-light
+				tr
+					th.has-text-centered
+						abbr(title='Event') Event
+					th.has-text-centered
+						abbr(title='Date') Date
+					th.has-text-centered
+						abbr(title='Progress') Progress				
+					th.has-text-centered
+						abbr(title='Status') Status
+					th.has-text-centered
+						abbr(title='Details') Details
+
+			tbody
+				each activity in activities
+					tr
+						th.has-text-centered.has-text-weight-light
+							span.tooltip.is-tooltip-bottom(data-tooltip=activity.event.title)
+								span.icon.is-large
+									i(class='icon-' + activity.event.icon + ' has-text-' + activity.event.color)
+
+						th.has-text-centered.has-text-weight-light=activity.created
+
+						th.has-text-centered.has-text-weight-light
+							progress.progress.is-dark.is-medium(value=activity.progress max=100)
+							.is-size-6(style='margin-top: -20px;') #{activity.progress}%
+
+						th.has-text-centered.has-text-weight-light
+							if activity.status == 'completed'
+								span.tag.is-success.is-medium(style='width:100px;')=activity.status
+							else if activity.status == 'failed'
+								span.tag.is-danger.is-medium(style='width:100px;')=activity.status
+							else
+								span.tag.is-warning.is-medium(style='width:100px;')=activity.status
+
+						th.has-text-centered
+							a.button.modal-button.modal-activity(data-target='viewActivity' data-id=activity.id data-message=activity.message style='width:75px;')
+								span.icon
+									i.icon-options
+
+		if activities && activities.length <= 0
+			p.has-text-centered
+				| No activity to report.
+			br
+
+	nav.pagination.is-medium(role='navigation', aria-label='pagination')
+		if prev === start + '/' + (start + limit)
+			a.pagination-previous.has-background-white(disabled) Previous
+		else
+			a.pagination-previous.has-background-white(href='/activity/' + prev) Previous
+		
+		if activities.length < limit
+			a.pagination-next.has-background-white(disabled) Next
+		else
+			a.pagination-next.has-background-white(href='/activity/' + next) Next
+
+		.pagination-list
+			if activities.length < limit
+				p Displaying #{activities.length} results (#{start} - #{total})
+			else
+				p Displaying #{activities.length} results (#{start} - #{total})
+
+	include includes/modals

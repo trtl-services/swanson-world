@@ -1,0 +1,75 @@
+.modal#newApp
+    .modal-background
+    .modal-card
+        if wallets.length >= 1
+            form(method='post', action='/app/new')
+                header.modal-card-head
+                    p.modal-card-title New App
+                    span.delete(aria-label='close')
+                section.modal-card-body
+                                    
+                    .field.has-addons
+                        .control
+                            button.button.is-large.is-static(style="width:140px;")
+                                span.is-left Name
+                        .control.is-expanded
+                            input.input.is-large(type='text' name='name')
+                        .control.tooltip.is-tooltip-left(data-tooltip='The name for the app in the dashboard.')
+                            button.button.is-large.is-static
+                                span.icon
+                                    i.icon-question
+
+                    .field.has-addons
+                        .control
+                            button.button.is-large.is-static(style="width:140px;")
+                                span.is-left Domain
+                        .control.is-expanded
+                            input.input.is-large(type='text' name='domain')
+                        .control.tooltip.is-tooltip-multiline.is-tooltip-left(data-tooltip='The domain name where that points to the server where the app is hosted.')
+                            button.button.is-large.is-static
+                                span.icon
+                                    i.icon-question
+
+                    .field.has-addons
+                        .control
+                            button.button.is-large.is-static(style="width:140px;")
+                                span.is-left IP Address
+                        .control.is-expanded
+                            input.input.is-large(type='text' name='ipAddress')
+                        .control.tooltip.is-multiline.is-tooltip-left(data-tooltip='The IP Address of the server where the app is hosted.')
+                            button.button.is-large.is-static
+                                span.icon
+                                    i.icon-question
+
+                    .field.has-addons
+                        .control
+                            button.button.is-large.is-static(style="width:140px;")
+                                span.is-left Wallet
+                        .control.is-expanded
+                           .select.is-large.is-fullwidth
+                                select.is-large(name='wallet')
+                                    each wallet in wallets
+                                        option(value=wallet.id)=wallet.name
+
+                        .control.tooltip.is-tooltip-left(data-tooltip='The wallet container the app should bind to.')
+                            button.button.is-large.is-static
+                                span.icon
+                                    i.icon-question
+
+
+                    if user.verified === 1
+                        hr
+                        .field
+                            .control.has-icons-left
+                                input.input.is-large.has-text-centered(type='text' name='token' placeholder='000000')
+                                span.icon.is-large.is-left
+                                    i.icon-key
+                footer.modal-card-foot
+                    button.button.is-large.is-success.is-fullwidth(type='submit') Launch!
+        else 
+            header.modal-card-head
+                p.modal-card-title No Available Wallet Found
+                span.delete(aria-label='close')
+            section.modal-card-body.has-text-centered
+                p In order to launch an app, you will need to have an available <a href='/wallet' class='is-link'>wallet container</a>.
+            footer.modal-card-foot

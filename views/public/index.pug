@@ -1,0 +1,30 @@
+html
+	include ../includes/header.pug
+
+	body
+		include ../includes/nav.pug
+
+		section.hero.is-light(style='padding-top:60px;')
+
+			.hero-body
+				.container.is-desktop(style='min-height:314px;background-image:url("/img/swanson/350/Computing.png");background-repeat:no-repeat;background-position:right;')
+					div(style='max-width: 60%;')
+						h1.title.is-size-1(style='line-height:1.5;') Turtle Me
+						h1.subtitle.is-size-2.has-text-weight-light.has-background-white(style='line-height:1.4;padding:15px;')
+							| A virtual market place for creatives to sell and buy services in TurtleCoin. 
+						
+						.buttons
+							a.button.is-large.is-primary.is-outlined.is-hidden-mobile(href='/register' style='font-size:1.8em;')
+								span.icon.is-large
+									i.icon-rocket
+								span Get Started
+
+		section.hero.is-small
+			.hero-body(style='padding:20px 0 50px 0;')
+				.container.is-desktop
+					.columns.has-text-centered
+						.column
+						.column
+						.column
+
+		include ../includes/footer.pug

@@ -1,0 +1,21 @@
+extends includes/layout_default.pug
+block content
+	h1.title.is-size-1 Welcome!
+	hr
+	h1.subtitle.is-size-3 Your account is almost ready! Before we can continue, please take a minute to read and agree to the below statements.
+	
+	form#welcomeValidation(method='post', action='/welcome'  class='welcomeValidation')
+
+		.box.has-background-white
+			input#one.switch.is-outlined.is-primary.is-medium(type='checkbox' name='termOne' style='position:relative;')
+			label(for='one' style='line-height:35px;') I understand and agree that TRTL Me is not liable for any accidental loss of TRTL.
+
+		.box.has-background-white
+			input#two.switch.is-outlined.is-primary.is-medium(type='checkbox' name='termTwo' style='position:relative;')
+			label(for='two' style='line-height:35px;') I understand that the sending of non-standard transaction could lead to a complete loss of my transaction.
+
+		.box.has-background-white
+			input#three.switch.is-outlined.is-primary.is-medium(type='checkbox' name='termThree' style='position:relative;')
+			label(for='three' style='line-height:35px;') I understand and agree that there is a #{fee}% seller fee. I acknowledge that that TRTL Me has the rights to change its fee structure at any time.
+			
+		button.button.is-large.is-primary.is-fullwidth(type='submit') Let's Go!

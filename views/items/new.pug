@@ -1,0 +1,88 @@
+extends ../includes/layout_default
+
+block content
+	.level
+		.level-left
+			h1.is-size-3.title.is=title
+		.level.-right
+			button.button.is-dark.is-outlined.modal-button.is-medium.tooltip.is-tooltip-success.is-tooltip-top(data-tooltip='New' data-target='newApp')
+				span.icon.is-medium
+					i.icon-plus
+	section.columns
+		.column
+			.box.has-background-white
+				.level
+					.level-left
+						p.title.is-size-2=stats.apps.toLocaleString(undefined, {})
+					.level-right
+						i.icon-grid.is-size-2
+				p.subtile.is-size-5 Apps
+		.column
+			.box.has-background-white
+				.level
+					.level-left
+						p.title.is-size-2=stats.wallets.toLocaleString(undefined, {})
+					.level-right
+						i.icon-wallet.is-size-2
+				p.subtile.is-size-5 Wallets
+
+		.column
+			.box.has-background-white
+				.level
+					.level-left
+						p.title.is-size-2=stats.addresses.toLocaleString(undefined, {})
+					.level-right
+						i.icon-layers.is-size-2
+				p.subtile.is-size-5 Addresses
+			
+		.column
+			.box.has-background-white
+				.level
+					.level-left
+						p.title.is-size-2=stats.transactions.toLocaleString(undefined, {})
+					.level-right
+						i.icon-envelope.is-size-2
+				p.subtile.is-size-5 Transactions
+	
+	br
+
+	section.box.has-background-light.is-paddingless
+		.box.has-background-white.is-paddingless
+			table.table.is-striped.is-fullwidth.is-size-5
+				thead.has-background-light
+					tr
+						th.has-text-centered
+							abbr(title='Name') Name
+						th.has-text-centered
+							abbr(title='Domain') Domain
+						th.has-text-centered
+							abbr(title='IP Address') IP Address
+						th.has-text-centered
+							abbr(title='Wallet') Wallet
+						th.has-text-centered
+							abbr(title='Manage') Manage
+				tbody
+					each app in apps
+						tr
+							th.has-text-centered.has-text-weight-light
+								.tag.is-light.is-medium=app.name
+				
+							th.has-text-centered.has-text-weight-light=app.domain
+							th.has-text-centered.has-text-weight-light=app.ipAddress
+							th.has-text-centered.has-text-weight-light
+								span.tooltip.is-tooltip-right(data-tooltip='Last checked ' + app.updated)
+									if app.status === 0
+										a.tag.is-danger.is-medium(href='/wallet/' + app.walletId)=app.wallet
+									else if app.status === 1
+										a.tag.is-success.is-medium(href='/wallet/' + app.walletId)=app.wallet
+									else
+										a.tag.is-warning.is-medium(href='/wallet/' + app.walletId)=app.wallet
+							th.has-text-centered
+								a.button(href='/app/' + app.id style='width:75px;')
+									span.icon
+										i.icon-options
+			if apps && apps.length <= 0
+				p.has-text-centered
+					| You have zero applications. Get started by <a class='modal-button' data-target='newApp')>creating</a> one!
+				br
+	include includes/modals
