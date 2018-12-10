@@ -43,6 +43,8 @@ db.schema.hasTable('items').then(function (exists) {
       table.string('description', 1024)
       table.decimal('amount', 24, 2).defaultTo(0)
       table.string('paymentId', 187)
+      table.integer('views').defaultTo(0)
+      table.integer('purchases').defaultTo(0)
       table.integer('downloads').defaultTo(0)
       table.integer('deleted').defaultTo(0)
       table.datetime('created').defaultTo(db.fn.now())

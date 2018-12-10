@@ -119,11 +119,14 @@ const verifyRecaptcha = require('./middleware/verifyRecaptcha')
 // Routes
 const welcome = require('./routes/welcome')
 const dashboard = require('./routes/dashboard')
+const items = require('./routes/items')
 const settings = require('./routes/settings')
 const activity = require('./routes/activity')
 
 app.use('/welcome', welcome)
 app.use('/dashboard', verifyUser, dashboard)
+app.use('/items', verifyUser, items)
+
 app.use('/settings', verifyUser, settings)
 app.use('/activity', verifyUser, activity)
 
