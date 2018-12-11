@@ -6,13 +6,9 @@ block content
 
 	.columns
 		.column
-			.box.has-background-white!=marked(item.overview)
+			.box.has-background-white
 		
 		.column.is-one-third
-			.box.has-background-white.has-text-centered
-				h1.title=item.price
-				a.button.is-success.is-fullwidth.has-text-weight-bold(href='/purchase/' + item.id) Purchase
-
 			.box.has-background-white.has-text-centered
 				table.table.is-fullwidth.is-responsive
 					tbody
