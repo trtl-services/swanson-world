@@ -12,24 +12,29 @@ const validateInput = require('../middleware/validateInput')
 const moment = require('moment')
 
 // Market View
-router.get('/', permission(), async function(req, res, next) {
+router.get('/:id',
+[
+  check('id')
+  .not().isEmpty()
+  .isInt()
+],
+validateInput,
+async function(req, res, next) {
   try {
 
-    const getItems = await db('items')
+    const getItem = await db('items')
     .select('id', 'name', 'description', 'price', 'views', 'purchases', 'filesize', 'created', 'reviewed')
-    .where('userId', req.user.id)
+    .where('id', req.params.id)
     .whereNot('deleted', 1)
     //.whereNot('reviewed', 0)
 
-    getItems.forEach(function(item) {
-      item.price = item.price.toFixed(2)
-      item.created = moment(item.created).format('DD-MM-YYY')
-    })
+    getItem[0].price =  getItem[0].price.toFixed(2)
+    getItem[0].created = moment( getItem[0].created).format('DD-MM-YYY')
 
-    res.render('browse', {
-      title: 'Browse',
+    res.render('public/item', {
+      title: getItem[0].name,
       user: (req.user) ? req.user : undefined,
-      items: getItems
+      item: getItem
     })
   }
   catch(err) {
@@ -37,21 +42,5 @@ router.get('/', permission(), async function(req, res, next) {
   }
 })
 
-// Items View
-router.get('/new', permission(), function(req, res, next) {
-  try {
-
-    const getLicenses = require('../utils/licenses.json')
-
-    res.render('items/new', {
-      title: 'New Item',
-      user: (req.user) ? req.user : undefined,
-      licenses: getLicenses.licenses
-    })
-  }
-  catch(err) {
-    next(err)
-  }
-})
 
 module.exports = router

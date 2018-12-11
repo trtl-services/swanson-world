@@ -125,12 +125,15 @@ const welcome = require('./routes/welcome')
 const dashboard = require('./routes/dashboard')
 const items = require('./routes/items')
 const browse = require('./routes/browse')
+const view = require('./routes/view')
 const settings = require('./routes/settings')
 const activity = require('./routes/activity')
 
 app.use('/welcome', welcome)
 app.use('/dashboard', verifyUser, dashboard)
 app.use('/browse', browse)
+app.use('/view', view)
+
 app.use('/items', verifyUser, items)
 
 app.use('/settings', verifyUser, settings)
