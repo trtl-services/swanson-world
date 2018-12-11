@@ -137,7 +137,6 @@ app.use('/view', view)
 app.use('/purchase', verifyUser, purchase)
 
 app.use('/items', verifyUser, items)
-
 app.use('/settings', verifyUser, settings)
 app.use('/activity', verifyUser, activity)
 
