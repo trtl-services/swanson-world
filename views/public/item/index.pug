@@ -2,13 +2,39 @@ extends ../../includes/layout_default
 
 block content
 	//include includes/head
+	h1.title=item.name
 
 	.columns
 		.column
-			h1.title=item.name
-
 			.box.has-background-white!=marked(item.content)
 		
 		.column.is-one-third
 			.box.has-background-white.has-text-centered
+				h1.title=item.price
+				a.button.is-success.is-fullwidth.has-text-weight-bold(href='/purchase/' + item.id) Purchase
 
+			.box.has-background-white.has-text-centered
+				table.table.is-fullwidth.is-responsive
+					tbody
+						tr
+							td
+								| Author: 
+
+							td
+								a(href='/profile/' + item.username)=item.username
+						tr
+							td
+								| License: 
+
+							td
+								a(href='#')=item.license
+						tr
+							td
+								| Sales: 
+
+							td=item.purchases
+						tr
+							td
+								| Last Updated: 
+
+							td=item.updated

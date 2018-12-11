@@ -88,7 +88,7 @@ router.post('/new', permission(), upload.single('file'),
   .not().isEmpty()
   .isFloat(),
 
-  check('content')
+  check('overview')
   .not().isEmpty()
   .unescape(),
 
@@ -116,7 +116,7 @@ async function(req, res, next) {
         name: req.body.name,
         description: req.body.description,
         price: req.body.price,
-        content: req.body.content,
+        overview: req.body.overview,
         license: req.body.license,
         paymentId: paymentId,
         integratedAddress: integratedAddress.address,

@@ -23,14 +23,16 @@ async function(req, res, next) {
   try {
 
     const getItem = await db('items')
-    .select('id', 'name', 'description', 'price', 'content', 'views', 'purchases', 'filesize', 'created', 'reviewed')
-    .where('id', req.params.id)
-    .whereNot('deleted', 1)
-    //.whereNot('reviewed', 0)
+    .leftJoin('users', 'users.id', 'items.userId')
+    .select('users.username', 'items.id', 'items.name', 'items.description', 'items.price', 'items.overview', 'items.license', 'items.views', 'items.purchases', 'items.updated', 'items.created', 'items.reviewed')
+    .where('items.id', req.params.id)
+    .whereNot('items.deleted', 1)
+    //.whereNot('items.reviewed', 0)
     .limit(1)
 
     getItem[0].price =  getItem[0].price.toFixed(2)
-    getItem[0].created = moment( getItem[0].created).format('DD-MM-YYY')
+    getItem[0].updated = moment(getItem[0].updated).format('DD-MM-YYYY')
+    getItem[0].created = moment(getItem[0].created).format('DD-MM-YYYY')
 
     res.render('public/item', {
       title: getItem[0].name,
