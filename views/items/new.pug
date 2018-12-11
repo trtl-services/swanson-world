@@ -6,6 +6,7 @@ block content
 	include includes/head
 
 	form(action='/items/new' method='post' enctype='multipart/form-data')
+		
 		#itemWizard.steps.is-medium.box.has-background-white
 			.step-item.is-active.is-success
 				.step-marker 1
@@ -148,13 +149,12 @@ block content
 												option(value=licence.licenseId)=licence.name
 
 				.step-content.has-text-centered
-
 					if user.verified === 1
 						.field
 							.control
 								input.input.is-medium.is-fullwidth.has-text-centered(type='text' name='token' placeholder='000000')
 					.field
-						button.button.is-large.is-success.is-fullwidth(type='submit') Submit for Publication
+						button.button.is-large.is-success.is-fullwidth(type='submit' value='submit') Submit for Publication
 			
 			.steps-actions
 				.steps-action
@@ -192,6 +192,7 @@ block content
 					reviewEditor.togglePreview()
 				}
 				else if(t === 4) {
+
 
 				}
 

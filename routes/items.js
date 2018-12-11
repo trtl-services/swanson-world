@@ -11,6 +11,8 @@ const { check } = require('express-validator/check')
 const validateInput = require('../middleware/validateInput')
 const crypto = require('crypto')
 const TS = require('../utils/utils').trtlServices
+const multer  = require('multer')
+const upload = multer({ dest: 'uploads/' })
 
 // Items View
 router.get('/', permission(), async function(req, res, next) {
@@ -53,7 +55,7 @@ router.get('/new', permission(), function(req, res, next) {
   }
 })
 
-router.post('/new', permission(),
+router.post('/new', permission(), upload.single('file'),
 [
   check('name')
   .not().isEmpty()
@@ -82,6 +84,7 @@ router.post('/new', permission(),
 validateInput,
 async function(req, res, next) {
   try {
+    console.log(req.file)
 
     console.log(req.body)
 
