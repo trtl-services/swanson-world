@@ -78,6 +78,23 @@ db.schema.hasTable('orders').then(function (exists) {
 })
 
 
+// Create 'history' table if it does not exist
+db.schema.hasTable('history').then(function (exists) {
+  if (!exists) {
+    return db.schema.createTable('history', function (table) {
+      table.increments()
+      table.integer('userId')
+      table.integer('type')
+      table.decimal('amount', 24, 2).defaultTo(0)
+      table.decimal('fee', 24, 2).defaultTo(0)
+      table.string('transactionHash')
+      table.integer('confirms')
+      table.datetime('created').defaultTo(db.fn.now())
+    })
+  }
+})
+
+
 // Create 'activity' table if it does not exist
 db.schema.hasTable('activity').then(function (exists) {
   if (!exists) {
