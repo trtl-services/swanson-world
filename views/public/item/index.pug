@@ -7,9 +7,8 @@ block content
 		.column
 			h1.title=item.name
 
-			.box.has-background-white.has-text-centered
-				p=item.content
-
+			.box.has-background-white!=marked(item.content)
+		
 		.column.is-one-third
 			.box.has-background-white.has-text-centered
 

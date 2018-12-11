@@ -23,10 +23,11 @@ async function(req, res, next) {
   try {
 
     const getItem = await db('items')
-    .select('id', 'name', 'description', 'price', 'views', 'purchases', 'filesize', 'created', 'reviewed')
+    .select('id', 'name', 'description', 'price', 'content', 'views', 'purchases', 'filesize', 'created', 'reviewed')
     .where('id', req.params.id)
     .whereNot('deleted', 1)
     //.whereNot('reviewed', 0)
+    .limit(1)
 
     getItem[0].price =  getItem[0].price.toFixed(2)
     getItem[0].created = moment( getItem[0].created).format('DD-MM-YYY')
@@ -34,7 +35,8 @@ async function(req, res, next) {
     res.render('public/item', {
       title: getItem[0].name,
       user: (req.user) ? req.user : undefined,
-      item: getItem
+      marked: require('marked'),
+      item: getItem[0]
     })
   }
   catch(err) {
