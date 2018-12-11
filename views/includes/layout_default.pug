@@ -1,13 +1,14 @@
 html
-    include header.pug
+    include header
 
     body.has-navbar-fixed-top
-        include nav.pug
+        include nav
 
         section.hero.is-light
             .hero-body
                 .container
-                        
+                    include messages
+
                     block content
 
-        include footer.pug
+        include footer

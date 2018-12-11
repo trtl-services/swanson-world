@@ -1,7 +1,7 @@
-body > #standalone-container {
-    margin: 50px auto;
-    max-width: 720px;
+  .CodeMirror, .CodeMirror-scroll {
+    min-height: 200px;
   }
-  #editor-container {
-    height: 350px;
+
+  .CodeMirror {
+    height: 300px;
   }

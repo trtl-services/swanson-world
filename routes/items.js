@@ -17,7 +17,7 @@ router.get('/', permission(), async function(req, res, next) {
   try {
 
     const getItems = await db('items')
-    .select('name', 'description', 'views', 'purchases', 'downloads', 'created')
+    .select('name', 'description', 'views', 'purchases', 'downloads', 'created', 'reviewed')
     .where('userId', req.user.id)
     .whereNot('deleted', 1)
 
@@ -39,9 +39,13 @@ router.get('/', permission(), async function(req, res, next) {
 // Items View
 router.get('/new', permission(), function(req, res, next) {
   try {
+
+    const getLicenses = require('../utils/licenses.json')
+
     res.render('items/new', {
       title: 'New Item',
-      user: (req.user) ? req.user : undefined
+      user: (req.user) ? req.user : undefined,
+      licenses: getLicenses.licenses
     })
   }
   catch(err) {
@@ -50,59 +54,63 @@ router.get('/new', permission(), function(req, res, next) {
 })
 
 router.post('/new', permission(),
-  [
-    check('name')
-    .not().isEmpty()
-    .trim(),
+[
+  check('name')
+  .not().isEmpty()
+  .trim(),
 
-    check('description')
-    .not().isEmpty()
-    .trim()
-    .unescape(),
+  check('description')
+  .not().isEmpty()
+  .trim()
+  .unescape(),
 
-    check('category')
-    .not().isEmpty(),
+  check('category')
+  .not().isEmpty(),
 
-    check('price')
-    .not().isEmpty()
-    .isFloat(),
+  check('price')
+  .not().isEmpty()
+  .isFloat(),
 
-    check('content')
-    .not().isEmpty()
-    .unescape(),
+  check('content')
+  .not().isEmpty()
+  .unescape(),
 
-    check('license')
-    //.not().isEmpty()
+  check('license')
+  .not().isEmpty()
 
-  ],
-  validateInput,
-  async function(req, res, next) {
-    try {
+],
+validateInput,
+async function(req, res, next) {
+  try {
 
-      const paymentId = crypto
-      .randomBytes(Math.ceil(len / 2))
-      .toString('hex')
-      .slice(0, 64) 
+    console.log(req.body)
 
-      const integratedAddress = await TS.integratedAddress(req.user.address, paymentId)
+    const paymentId = crypto
+    .randomBytes(Math.ceil(len / 2))
+    .toString('hex')
+    .slice(0, 64) 
 
-      await db('users')
-        .insert({
-            userId: req.user.id,
-            name: req.body.name,
-            description: req.body.description,
-            price: req.body.price,
-            content: req.body.content,
-            license: req.body.license,
-            paymentId: paymentId,
-            integratedAddress: integratedAddress
-        })
+    const integratedAddress = await TS.integratedAddress(req.user.address, paymentId)
 
-      res.redirect('/items')
-    } catch (err) {
-      req.flash('error', 'An error occured adding a new item.')
-      res.redirect('/items')
-    }
-  })
+    await db('users')
+    .insert({
+        userId: req.user.id,
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price,
+        content: req.body.content,
+        license: req.body.license,
+        paymentId: paymentId,
+        integratedAddress: integratedAddress
+    })
+  
+    req.flash('success', 'Item has been submitted and is under review.')
+
+    res.redirect('/items')
+  } catch (err) {
+    req.flash('error', 'An error occured adding a new item.')
+    res.redirect('/items')
+  }
+})
 
 module.exports = router

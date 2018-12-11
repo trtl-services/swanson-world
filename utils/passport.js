@@ -7,7 +7,6 @@ const db = require('../utils/utils').knex
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
 const TS = require('../utils/utils').trtlServices
-
 const moment = require('moment')
 
 module.exports = function(passport) {
@@ -139,13 +138,13 @@ module.exports = function(passport) {
               userId: user[0].id,
               method: 'login',
               status: 'completed',
-              progress: 100,
               message: 'Logged in from ' + req.headers['x-real-ip'],
               notify: 1
             })
 
           return done(null, user[0])
         } catch (err) {
+          console.log(err)
           // fix
           if (err[0].msg) {
             err = err[0].msg

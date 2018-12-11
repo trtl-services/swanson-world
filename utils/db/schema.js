@@ -50,6 +50,7 @@ db.schema.hasTable('items').then(function (exists) {
       table.string('integratedAddress', 187)
       table.integer('deleted').defaultTo(0)
       table.datetime('created').defaultTo(db.fn.now())
+      table.integer('reviewed').defaultTo(0)
       table.unique('paymentId')
     })
   }
@@ -80,6 +81,7 @@ db.schema.hasTable('activity').then(function (exists) {
       table.integer('orderId')
       table.string('method')
       table.string('status')
+      table.string('message', 1024)
       table.integer('notify').defaultTo(1)
       table.integer('seen').defaultTo(0)
       table.integer('deleted').defaultTo(0)

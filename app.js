@@ -21,6 +21,10 @@ const speakEasy = require('speakeasy')
 const uuid = require('uuid/v1')
 
 
+//Load DB Schema
+require('./utils/db/schema')
+
+
 // Setup Session Store
 const session = require('express-session')
 const MySQLStore = require('express-mysql-session')(session)

@@ -11,6 +11,7 @@ function validateInput (req, res, next) {
     if (!err.isEmpty()) {
 
       err = err.array()
+      console.log(err)
 
       if (err[0].msg) {
         err = err[0].msg

@@ -5,92 +5,209 @@ block content
 	
 	include includes/head
 
-	form(method='post', action='/items/new')
-		.columns
-			.column
-				.box.has-background-white
-					.field
-						h1.subtitle Name
-						input.input.is-medium.is-fullwidth(type='text' name='name')
-
-					br
-
-					.field
-						h1.subtitle Short Description
-						input.input.is-medium.is-fullwidth(type='text' name='description')
-
-					br
-
-					.field
-						h1.subtitle Category
-						.select.is-medium.is-fullwidth
-							select(name='category')
-								option(value='Graphics') Graphics
-								option(value='Vectors') Vectors
-								option(value='Scripts') Scripts
-								option(value='Themes') Themes
+	form(action='/items/new' method='post' enctype='multipart/form-data')
+		#itemWizard.steps.is-medium.box.has-background-white
+			.step-item.is-active.is-success
+				.step-marker 1
+				.step-details
+					p.step-title Upload
+			.step-item.is-success
+				.step-marker 2
+				.step-details
+					p.step-title Edit
+			.step-item.is-success
+				.step-marker 3
+				.step-details
+					p.step-title Review
+			.step-item.is-success
+				.step-marker 4
+				.step-details
+					p.step-title Publish
+			.steps-content
+				.step-content.is-active.has-text-centered
 					
-					br
+					.file.is-primary.has-name.is-boxed.is-fullwidth.has-text-centered
+						label.file-label
+							input.file-input.is-medium(type='file' id='file' name='file' onchange='changeFileName()')
+							span.file-cta
+								span.icon.is-large.is-size-2
+									i.icon-cloud-upload
+								span.file-label.is-size-3 Choose a file…
+							span#fileName.file-name.has-text-centered.is-size-4 .zip
 
-					.field
-						h1.subtitle Price
-							input.input.is-medium.is-fullwidth(type='number' name='price' min=0 step=0.01)
-
+				.step-content
+					.field.is-horizontal
+						.field-label.is-normal
+							label.label Name
+						.field-body
+							.field
+								.control
+									input.input.is-medium(type='text' name='name' id='name')
+					.field.is-horizontal
+						.field-label.is-normal
+							label.label Description
+						.field-body
+							.field
+								.control
+									input.input.is-medium(type='text' name='description' id='description')
 					
-					br
+					.field.is-horizontal
+						.field-label.is-normal
+							label.label Category
+						.field-body
+							.field
+								.control
+									.select.is-medium.is-fullwidth
+										select(name='category' id='category')
+											option(value='Graphics') Graphics
+											option(value='Vectors') Vectors
+											option(value='Scripts') Scripts
+											option(value='Themes') Themes
 
-					.field
-						h1.subtitle Content
-						#standalone-container
-							#toolbar-container
-								span.ql-formats
-									select.ql-size
-								span.ql-formats
-									button.ql-bold
-									button.ql-italic
-									button.ql-underline
-									button.ql-strike
-								span.ql-formats
-									select.ql-color
-								span.ql-formats
-									button.ql-script(value='sub')
-									button.ql-script(value='super')
-								span.ql-formats
-									button.ql-blockquote
-									button.ql-code-block
-								span.ql-formats
-									button.ql-list(value='ordered')
-									button.ql-list(value='bullet')
-									button.ql-indent(value='-1')
-									button.ql-indent(value='+1')
-								span.ql-formats
-									button.ql-link
-									button.ql-image
-									button.ql-video
-							#editor-container
+					.field.is-horizontal
+						.field-label.is-normal
+							label.label Price
+						.field-body
+							.field
+								.control
+									input.input.is-medium.is-fullwidth(type='number' name='price' id='price' min=0 step=0.01)
 
-					br
+					.field.is-horizontal
+						.field-label.is-normal
+							label.label Content
+						.field-body
+							.field
+								.control
+									textarea.textarea.is-medium.is-fullwidth(name='content' id='content')
 
-					.field
-						h1.subtitle License
-						.select.is-medium.is-fullwidth
-							select(name='license')
+					.field.is-horizontal
+						.field-label.is-normal
+							label.label License
+						.field-body
+							.field
+								.control
+									.select.is-medium.is-fullwidth
+										select(name='license' id='license')
+											each licence in licenses
+												option(value=licence.licenseId)=licence.name
+
+				.step-content
+					.field.is-horizontal
+						.field-label.is-normal
+							label.label Name
+						.field-body
+							.field
+								.control
+									input.input.is-medium(type='text' name='nameReview' id='nameReview' disabled)
+					.field.is-horizontal
+						.field-label.is-normal
+							label.label Description
+						.field-body
+							.field
+								.control
+									input.input.is-medium(type='text' name='descriptionReview' id='descriptionReview' disabled)
+					
+					.field.is-horizontal
+						.field-label.is-normal
+							label.label Category
+						.field-body
+							.field
+								.control
+									.select.is-medium.is-fullwidth
+										select(name='categoryReview' id='categoryReview' disabled)
+											option(value='Graphics') Graphics
+											option(value='Vectors') Vectors
+											option(value='Scripts') Scripts
+											option(value='Themes') Themes
+
+					.field.is-horizontal
+						.field-label.is-normal
+							label.label Price
+						.field-body
+							.field
+								.control
+									input.input.is-medium.is-fullwidth(type='number' name='priceReview' id='priceReview' min=0 step=0.01 disabled)
+
+					.field.is-horizontal
+						.field-label.is-normal
+							label.label Content
+						.field-body
+							.field
+								.control
+									textarea.textarea.is-medium.is-fullwidth(name='contentReview' id='contentReview' disabled)
+
+					.field.is-horizontal
+						.field-label.is-normal
+							label.label License
+						.field-body
+							.field
+								.control
+									.select.is-medium.is-fullwidth
+										select(name='licenseReview' id='licenseReview' disabled)
+											each licence in licenses
+												option(value=licence.licenseId)=licence.name
+
+				.step-content.has-text-centered
 
 					if user.verified === 1
 						.field
-							.control.has-icons-left
+							.control
 								input.input.is-medium.is-fullwidth.has-text-centered(type='text' name='token' placeholder='000000')
-								span.icon.is-medium.is-left
-									i.icon-key
+					.field
+						button.button.is-large.is-success.is-fullwidth(type='submit') Submit for Publication
 			
-		.level
-			.level-left
-				a.button.is-danger.is-outlined.is-large(href='/items/') Cancel
-			.left-right
-				button.button.is-success.is-outlined.is-large(type='submit') Update
+			.steps-actions
+				.steps-action
+					a.button.is-medium.is-dark.is-outlined(href='#', data-nav='previous') Previous
+				.steps-action
+					a.button.is-medium.is-primary.is-outlined(href='#', data-nav='next') Next
+
 
 	script.
-		const editor = new Quill('#editor-container', {
-			modules: { toolbar: '#toolbar-container' },
-			theme: 'snow'
+		const editor = new SimpleMDE({
+			element: document.getElementById('content'),
+			forceSync: true
 		})
+
+		const reviewEditor = new SimpleMDE({
+			element: document.getElementById('contentReview'),
+			toolbar: false,
+			status: false
+		})
+
+		const wizard = new bulmaSteps(document.getElementById('itemWizard'), {
+			onShow: function(t) {
+
+				if(t === 1 && !document.getElementById('file').value) {
+					alert('No file selected. Go Back.')
+				}
+				else if(t === 2) {
+					document.getElementById('nameReview').value = document.getElementById('name').value
+					document.getElementById('descriptionReview').value = document.getElementById('description').value
+					document.getElementById('categoryReview').value = document.getElementById('category').value
+					document.getElementById('priceReview').value = document.getElementById('price').value
+					document.getElementById('licenseReview').value = document.getElementById('license').value
+
+					reviewEditor.value(document.getElementById('content').value)
+					reviewEditor.togglePreview()
+				}
+				else if(t === 4) {
+
+				}
+
+			}
+		})
+
+		function changeFileName() {
+			const file = document.getElementById('file').value
+			const fullFileName = file.substr(file.lastIndexOf('\\') + 1)
+			const fileName = fullFileName.substr(0, fullFileName.length - 4)
+			const fileType = file.split('.').pop()
+
+			if(fileType !== 'zip') {
+				alert('File has to be a zip archive.')
+			} else {
+				document.getElementById('fileName').innerHTML = fullFileName
+				document.getElementById('name').value = fileName
+			}
+		}
