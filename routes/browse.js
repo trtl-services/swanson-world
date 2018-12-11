@@ -9,40 +9,25 @@ const permission = require('permission')
 const db = require('../utils/utils').knex
 const { check } = require('express-validator/check')
 const validateInput = require('../middleware/validateInput')
-const crypto = require('crypto')
-const TS = require('../utils/utils').trtlServices
 const moment = require('moment')
-const multer  = require('multer')
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, process.env.UPLOAD_PATH + '/' + req.user.id)
-  },
-  filename: function (req, file, cb) {
-    const name = file.originalname.substr(0, file.originalname.length - 4)
-    const ext = file.originalname.split('.').pop()
-    cb(null, name + '-' + moment().unix() + '.' + ext)
-  }
-})
-
-const upload = multer({ storage: storage })
-
-// Items View
+// Market View
 router.get('/', permission(), async function(req, res, next) {
   try {
 
     const getItems = await db('items')
-    .select('id', 'name', 'description', 'price', 'views', 'purchases', 'created', 'reviewed')
+    .select('id', 'name', 'description', 'price', 'views', 'purchases', 'filesize', 'created', 'reviewed')
     .where('userId', req.user.id)
     .whereNot('deleted', 1)
+    //.whereNot('reviewed', 0)
 
     getItems.forEach(function(item) {
       item.price = item.price.toFixed(2)
       item.created = moment(item.created).format('DD-MM-YYY')
     })
 
-    res.render('items', {
-      title: 'Items',
+    res.render('browse', {
+      title: 'Browse',
       user: (req.user) ? req.user : undefined,
       items: getItems
     })

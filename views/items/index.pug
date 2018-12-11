@@ -11,26 +11,26 @@ block content
 						th.has-text-centered
 							abbr(title='Name') Name
 						th.has-text-centered
-							abbr(title='Amount') Amount
+							abbr(title='Price') Price
 						th.has-text-centered
 							abbr(title='Views') Views
 						th.has-text-centered
 							abbr(title='Purchases') Purchases
 						th.has-text-centered
-							abbr(title='Manage') Manage
+							abbr(title='View') View
+							
 				tbody
 					each item in items
 						tr
-							th.has-text-centered.has-text-weight-light
-								.tag.is-light.is-medium=item.name
-				
 							th.has-text-centered.has-text-weight-light=item.name
-							th.has-text-centered.has-text-weight-light=item.amount
-							th.has-text-centered.has-text-weight-light=item.views
-							th.has-text-centered.has-text-weight-light=item.purchases
+							th.has-text-centered.has-text-weight-light=item.price
+							th.has-text-centered.has-text-weight-light
+								.tag.is-medium.is-info=item.views
+							th.has-text-centered.has-text-weight-light
+								.tag.is-medium.is-success=item.purchases
 
 							th.has-text-centered
-								a.button(href='/item/' + item.id style='width:75px;')
+								a.button(href='/items/' + item.id style='width:75px;')
 									span.icon
 										i.icon-options
 			if items && items.length <= 0
