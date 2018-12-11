@@ -20,7 +20,7 @@ db.schema.hasTable('users').then(function (exists) {
       table.string('currency').defaultTo('LTC')
       table.string('timezone').defaultTo('Europe/Andorra')
       table.string('address')
-      table.int('blockIndex')
+      table.integer('blockIndex')
       table.decimal('availableBalance', 24, 2).defaultTo(0)
       table.decimal('lockedBalance', 24, 2).defaultTo(0)
       table.integer('terms').defaultTo(0)
@@ -33,6 +33,7 @@ db.schema.hasTable('users').then(function (exists) {
   }
 })
 
+
 // Create 'items' table if it does not exist
 db.schema.hasTable('items').then(function (exists) {
   if (!exists) {
@@ -44,11 +45,13 @@ db.schema.hasTable('items').then(function (exists) {
       table.decimal('price', 24, 2).defaultTo(0)
       table.string('content', 5000)
       table.string('license')
+      table.string('paymentId', 64)
+      table.string('integratedAddress', 187)
+      table.string('filename')
+      table.integer('filesize')
       table.integer('views').defaultTo(0)
       table.integer('purchases').defaultTo(0)
       table.integer('downloads').defaultTo(0)
-      table.string('paymentId', 64)
-      table.string('integratedAddress', 187)
       table.integer('deleted').defaultTo(0)
       table.datetime('created').defaultTo(db.fn.now())
       table.integer('reviewed').defaultTo(0)
@@ -56,6 +59,7 @@ db.schema.hasTable('items').then(function (exists) {
     })
   }
 })
+
 
 // Create 'orders' table if it does not exist
 db.schema.hasTable('orders').then(function (exists) {
@@ -71,6 +75,7 @@ db.schema.hasTable('orders').then(function (exists) {
     })
   }
 })
+
 
 // Create 'activity' table if it does not exist
 db.schema.hasTable('activity').then(function (exists) {

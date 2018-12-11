@@ -154,6 +154,9 @@ block content
 							.control
 								input.input.is-medium.is-fullwidth.has-text-centered(type='text' name='token' placeholder='000000')
 					.field
+						br
+						p.is-size-5 You are almost there! Click the green button below to submit your item for review.
+						br
 						button.button.is-large.is-success.is-fullwidth(type='submit' value='submit') Submit for Publication
 			
 			.steps-actions
@@ -166,13 +169,15 @@ block content
 	script.
 		const editor = new SimpleMDE({
 			element: document.getElementById('content'),
-			forceSync: true
+			forceSync: true,
+			spellChecker: false
 		})
 
 		const reviewEditor = new SimpleMDE({
 			element: document.getElementById('contentReview'),
 			toolbar: false,
-			status: false
+			status: false,
+			spellChecker: false
 		})
 
 		const wizard = new bulmaSteps(document.getElementById('itemWizard'), {

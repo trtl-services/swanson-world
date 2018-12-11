@@ -7,6 +7,7 @@ const db = require('../utils/utils').knex
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
 const moment = require('moment')
+const fs = require('fs')
 const TRTLServices = require('ts-api-js')
 
 const TS = new TRTLServices({
@@ -88,6 +89,7 @@ module.exports = function(passport) {
           if (checkUser.length) {
             return done(null, false, req.flash('error', 'This username is already been taken.'))
           }
+          
           const createAddress = await TS.createAddress()
 
           const userConfig = {
@@ -99,12 +101,18 @@ module.exports = function(passport) {
             blockIndex: createAddress.blockIndex
           }
 
+          // Insert User
           const user = await db('users')
           .insert(userConfig)
 
+          // Make User Upload Directory
+          fs.mkdirSync(process.env.UPLOAD_PATH + '/' + user[0])
+
+          // Set User Session
           userConfig.id = user[0]
           req.session.verified = true
           return done(null, userConfig)
+
         } catch (err) {
           console.log(err)
           // fix
@@ -127,28 +135,29 @@ module.exports = function(passport) {
         try {
 
           const user = await db('users')
-            .select()
-            .where('username', username)
-            .limit(1)
+          .select()
+          .where('username', username)
+          .limit(1)
 
           if ((!user.length) || (!bcrypt.compareSync(password, user[0].password))) {
             return done(null, false, req.flash('error', 'Wrong login details.'))
           }
 
           await db('users')
-            .where('id', user[0].id)
-            .update({
-              seen: moment().format('YYYY-MM-DD HH:mm')
-            })
+          .where('id', user[0].id)
+          .update({
+            seen: moment().format('YYYY-MM-DD HH:mm')
+          })
 
+          // Record Login Activity
           await db('activity')
-            .insert({
-              userId: user[0].id,
-              method: 'login',
-              status: 'completed',
-              message: 'Logged in from ' + req.headers['x-real-ip'],
-              notify: 1
-            })
+          .insert({
+            userId: user[0].id,
+            method: 'login',
+            status: 'completed',
+            message: 'Logged in from ' + req.headers['x-real-ip'],
+            notify: 1
+          })
 
           return done(null, user[0])
         } catch (err) {

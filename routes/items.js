@@ -11,8 +11,19 @@ const { check } = require('express-validator/check')
 const validateInput = require('../middleware/validateInput')
 const crypto = require('crypto')
 const TS = require('../utils/utils').trtlServices
+const moment = require('moment')
 const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, '../uploads/' + req.user.id)
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + moment().unix())
+  }
+})
+
+const upload = multer({ storage: storage })
 
 // Items View
 router.get('/', permission(), async function(req, res, next) {
@@ -87,14 +98,18 @@ async function(req, res, next) {
     console.log(req.file)
     console.log(req.body)
 
-    const paymentId = crypto
-    .randomBytes(Math.ceil(len / 2))
-    .toString('hex')
-    .slice(0, 64) 
+    if(req.file.mimetype !== 'application/zip') {
+      throw (new Error('File has to be a zip archive.'))
+    }
 
-    const integratedAddress = await TS.integratedAddress(req.user.address, paymentId)
+    const paymentId = crypto.randomBytes(64).toString('hex')
 
-    await db('users')
+    console.log(paymentId)
+    
+    const integratedAddress = await TS.integrateAddress(req.user.address, paymentId)
+
+    // Insert Item
+    const insertItem = await db('items')
     .insert({
         userId: req.user.id,
         name: req.body.name,
@@ -103,13 +118,26 @@ async function(req, res, next) {
         content: req.body.content,
         license: req.body.license,
         paymentId: paymentId,
-        integratedAddress: integratedAddress
+        integratedAddress: integratedAddress.address,
+        filename: req.file.filename,
+        filesize: req.file.size
     })
   
-    req.flash('success', 'Item has been submitted and is under review.')
+    // Log 
+    await db('activity')
+    .insert({
+      userId: req.user.id,
+      itemId: insertItem[0],
+      method: 'publish',
+      status: 'completed',
+      message: '',
+      notify: 1
+    })
 
+    req.flash('success', 'Item has been submitted and is under review.')
     res.redirect('/items')
   } catch (err) {
+    console.log(err)
     req.flash('error', 'An error occured adding a new item.')
     res.redirect('/items')
   }
