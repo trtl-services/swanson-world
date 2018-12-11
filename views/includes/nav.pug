@@ -3,7 +3,6 @@ nav.navbar.is-primary.is-fixed-top.is-boxed(role='navigation', aria-label='navig
         .navbar-brand
             a.navbar-item.is-size-4.has-text-weight-light.has-background-white.has-text-dark(href='/')
                 div(style='background-image:url("/img/logo.png");background-repeat:no-repeat;background-position:left;padding: 0 0 0 48px;')
-
                     | TRTL Me
             span.navbar-burger.burger(data-target='navbarMenu')
                 span
@@ -30,6 +29,9 @@ nav.navbar.is-primary.is-fixed-top.is-boxed(role='navigation', aria-label='navig
             .navbar-end
                 if user && user.terms == true && session.verified == true
                     a.navbar-item.is-size-5.has-text-weight-semibold=user.name
+
+                    a.navbar-item(href='/balance')
+                        span.is-size-5=user.availableBalance.toFixed(2) + ' TRTL'
 
                     a.navbar-item(href='/settings')
                         span.icon.is-large
