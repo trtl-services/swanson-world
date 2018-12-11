@@ -1,0 +1,21 @@
+extends ../includes/layout_default
+
+block content
+	//include includes/head
+
+	.columns
+		.column
+			h1.title=title
+
+			.columns
+
+				each item in items
+
+					.column.is-one-third
+						.box.has-background-white.has-text-centered
+							h1.subtitle=item.name
+							a.button.is-primary.is-fullwidth(href='/view/' + item.id) View
+
+
+		.column.is-one-quarter
+			include includes/sidebar

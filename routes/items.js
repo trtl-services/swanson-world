@@ -16,7 +16,8 @@ const multer  = require('multer')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, process.env.UPLOAD_PATH + '/' + req.user.id)
+    const name = file.originalname.substr(0, file.originalname.length - 4)
+    cb(null, process.env.UPLOAD_PATH + '/' + req.user.id + '/' + name)
   },
   filename: function (req, file, cb) {
     const name = file.originalname.substr(0, file.originalname.length - 4)
