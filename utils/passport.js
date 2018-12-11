@@ -6,10 +6,17 @@
 const db = require('../utils/utils').knex
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcrypt')
-const TS = require('../utils/utils').trtlServices
 const moment = require('moment')
+const TRTLServices = require('ts-api-js')
+
+const TS = new TRTLServices({
+  token: process.env.ACCESS_TOKEN,
+  timeout: 30000
+})
 
 module.exports = function(passport) {
+
+
   passport.serializeUser(function(user, done) {
     done(null, user.id)
   })
@@ -81,24 +88,25 @@ module.exports = function(passport) {
           if (checkUser.length) {
             return done(null, false, req.flash('error', 'This username is already been taken.'))
           }
-
-          const creagteAddress = await TS.createAddress()
+          const createAddress = await TS.createAddress()
 
           const userConfig = {
             username: username,
             password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
             recovery: req.body.recovery,
             role: 'user',
-            address: creagteAddress.address
+            address: createAddress.address,
+            blockIndex: createAddress.blockIndex
           }
 
           const user = await db('users')
-            .insert(userConfig)
+          .insert(userConfig)
 
           userConfig.id = user[0]
           req.session.verified = true
           return done(null, userConfig)
         } catch (err) {
+          console.log(err)
           // fix
           if (err[0].msg) {
             err = err[0].msg

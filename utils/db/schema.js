@@ -20,6 +20,7 @@ db.schema.hasTable('users').then(function (exists) {
       table.string('currency').defaultTo('LTC')
       table.string('timezone').defaultTo('Europe/Andorra')
       table.string('address')
+      table.int('blockIndex')
       table.decimal('availableBalance', 24, 2).defaultTo(0)
       table.decimal('lockedBalance', 24, 2).defaultTo(0)
       table.integer('terms').defaultTo(0)

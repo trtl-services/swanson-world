@@ -85,7 +85,6 @@ validateInput,
 async function(req, res, next) {
   try {
     console.log(req.file)
-
     console.log(req.body)
 
     const paymentId = crypto

@@ -6,8 +6,8 @@
 const TRTLServices = require('ts-api-js')
 
 const trtlServices = new TRTLServices({
-  token: process.env.TS_API_TOKEN,
-  timeout: 5000
+  token: process.env.ACCESS_TOKEN,
+  timeout: 30000
 })
 
 module.exports = trtlServices
