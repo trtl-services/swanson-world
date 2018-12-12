@@ -30,7 +30,7 @@ nav.navbar.is-primary.is-fixed-top.is-boxed(role='navigation', aria-label='navig
                 if user && user.terms == true && session.verified == true
                     a.navbar-item.is-size-5.has-text-weight-semibold=user.name
 
-                    a.navbar-item(href='/balance')
+                    .navbar-item
                         span.is-size-5=user.availableBalance.toFixed(2) + ' TRTL'
 
                     a.navbar-item(href='/settings')
