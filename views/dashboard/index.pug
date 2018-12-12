@@ -27,9 +27,33 @@ block content
 
 
 	br
-	
-	h1.is-size-4.title.is Balance History
-	.box.has-background-white
 
+	h1.is-size-4.title.is Balance History
+
+	section.box.has-background-light.is-paddingless
+		.box.has-background-white.is-paddingless
+			table.table.is-striped.is-fullwidth.is-size-5
+				thead.has-background-light
+					tr
+						th.has-text-centered
+							abbr(title='Name') Event
+						th.has-text-centered
+							abbr(title='Price') Progress
+						th.has-text-centered
+							abbr(title='Views') Status
+						th.has-text-centered
+							abbr(title='Purchases') Date
+							
+				tbody
+					each tx in txs
+						tr
+							th.has-text-centered.has-text-weight-light=tx.name
+							th.has-text-centered.has-text-weight-light=item.price
+							th.has-text-centered.has-text-weight-light
+							
+			if txs && txs.length <= 0
+				p.has-text-centered
+					| You have no transaction history.
+				br
 
 	include includes/modals

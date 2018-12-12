@@ -13,9 +13,14 @@ const moment = require('moment')
 router.get('/', permission(), async function(req, res, next) {
   try {
 
+    const getTxs = await db('transactions')
+    .select()
+    .where('userId', req.user.id)
+
     res.render('dashboard', {
       title: 'Dashboard',
       user: (req.user) ? req.user : undefined,
+      txs: getTxs
     })
   } catch (err) {
     next(err)
