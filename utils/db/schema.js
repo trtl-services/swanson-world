@@ -84,7 +84,7 @@ db.schema.hasTable('transactions').then(function (exists) {
     return db.schema.createTable('transactions', function (table) {
       table.increments()
       table.integer('userId')
-      table.integer('type')
+      table.string('type')
       table.decimal('amount', 24, 2).defaultTo(0)
       table.decimal('fee', 24, 2).defaultTo(0)
       table.string('transactionHash')

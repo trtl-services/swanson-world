@@ -7,7 +7,7 @@ const express = require('express')
 const router = express.Router()
 const db = require('../utils/utils').knex
 const setHeader = require('../middleware/setHeader')
-const moment = require('moment')
+const TS = require('../utils/utils').trtlServices
 
 // Webhook
 router.post('/', setHeader, async function (req, res) {
@@ -48,7 +48,7 @@ router.post('/', setHeader, async function (req, res) {
       // Log Withdrawal 
       await db('activity')
       .insert({
-        userId: req.user.id,
+        userId: getUser[0].id,
         txId: insertTx[0],
         method: 'withdraw',
         status: 'completed',
@@ -60,7 +60,7 @@ router.post('/', setHeader, async function (req, res) {
 
       const getUser = await db('users')
       .select('id')
-      .where('address', req.body.addressFrom)
+      .where('address', req.body.address)
       .limit(1)
 
       const insertTx = await db('transactions')
@@ -69,7 +69,7 @@ router.post('/', setHeader, async function (req, res) {
           type: 'in',
           amount: req.body.description,
           amount: req.body.amount,
-          fee: +req.body.fee + +req.body.sfee, 
+          fee: +req.body.fee, 
           transactionHash: req.body.transactionHash,
           confirms: req.body.confirms
         })
@@ -88,7 +88,7 @@ router.post('/', setHeader, async function (req, res) {
       // Log Deposit 
       await db('activity')
       .insert({
-        userId: req.user.id,
+        userId: getUser[0].id,
         txId: insertTx[0],
         method: 'deposit',
         status: 'completed',
@@ -198,6 +198,7 @@ router.post('/', setHeader, async function (req, res) {
     })
   }
   catch(err) {
+    console.log(err)
     res.status(500).json(err)
   }
 })
