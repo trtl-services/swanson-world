@@ -48,15 +48,15 @@ block content
 						tr
 							th.has-text-centered.has-text-weight-light
 								if tx.type === 'in'
-									.tag.is-success(style='width: 50px;')=tx.type
+									.tag.is-medium.is-success.is-uppercase.has-text-weight-bold(style='width: 85px;') Deposit
 								else
-									.tag.is-danger(style='width: 50px;')=tx.type
+									.tag.is-medium.is-danger.is-uppercase.has-text-weight-bold(style='width: 85px;') Withdraw
 							th.has-text-centered.has-text-weight-light=tx.amount
 							th.has-text-centered.has-text-weight-light
 								if tx.confirms >= confirms
-									.tag.is-success(style='width: 75px;') confirmed
+									.tag.is-medium.is-success(style='width: 75px;') confirmed
 								else
-									.tag.is-warning(style='width: 75px;')=tx.confirms
+									.tag.is-medium.is-warning(style='width: 75px;')=tx.confirms
 							th.has-text-centered.has-text-weight-light=tx.created
 
 			if txs && txs.length <= 0

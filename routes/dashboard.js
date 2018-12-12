@@ -22,6 +22,7 @@ router.get('/', permission(), async function(req, res, next) {
     .select('transactions.*')
     .where('transactions.userId', req.user.id)
     .whereNull('orders.transactionHash')
+    .orderBy('id', 'desc')
 
     getTxs.forEach(function(tx) {
       tx.amount = tx.amount.toFixed(2)
