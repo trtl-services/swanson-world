@@ -1,2 +1,8 @@
 h1.subtitle Popular
-.box.has-background-white.has-text-centered
+.box.has-background-white.is-paddingless
+    table.table.is-fullwidth.is-responsive.is-size-5
+        tbody
+            each item in popular
+                tr
+                    td.is-size-5
+                        a(href='/view/' + item.id)=item.name

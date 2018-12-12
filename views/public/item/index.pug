@@ -10,7 +10,11 @@ block content
 		
 		.column.is-one-third
 			.box.has-background-white.has-text-centered
-				h1.title=item.price
+				.tooltip.is-tooltip-top(data-tooltip='Fees Included')
+					h1.title=item.price
+				
+				br
+				
 				a.button.is-success.is-fullwidth.has-text-weight-bold(href='/purchase/' + item.id) Purchase
 
 			.box.has-background-white

@@ -6,31 +6,33 @@ block content
 
 	.columns
 		.column
-			.box.has-background-white
+			.box.has-background-white.has-text-centered
+				p.is-size-5 To purchase this item, click the button below to continue.
 		
+			form(action='' method='post')
+				input(type='hidden' name='id' value=item.id)
+				button.button.is-large.is-success.is-fullwidth(type='submit' style='padding:20px 0 60px 0;') Buy Now
 		.column.is-one-third
 			.box.has-background-white.has-text-centered
 				table.table.is-fullwidth.is-responsive
 					tbody
 						tr
 							td
-								| Author: 
+								| Price: 
 
-							td
-								a(href='/profile/' + item.username)=item.username
+							td=item.price
 						tr
 							td
-								| License: 
+								| Service Fee: 
 
-							td
-								a(href='#')=item.license
+							td=item.sfee
 						tr
 							td
-								| Sales: 
+								| Network Fee: 
 
-							td=item.purchases
+							td=item.fee
 						tr
 							td
-								| Last Updated: 
+								| Total:
 
-							td=item.updated
+							td=item.total

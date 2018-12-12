@@ -10,6 +10,7 @@ const db = require('../utils/utils').knex
 const { check } = require('express-validator/check')
 const validateInput = require('../middleware/validateInput')
 const moment = require('moment')
+const TS = require('../utils/utils').trtlServices
 
 // Market View
 router.get('/:id',
@@ -30,7 +31,9 @@ async function(req, res, next) {
     //.whereNot('items.reviewed', 0)
     .limit(1)
 
-    getItem[0].price =  getItem[0].price.toFixed(2)
+    const sfee = await TS.getFee(getItem[0].price)
+    getItem[0].price = (getItem[0].price + sfee + 0.1).toFixed(2)
+
     getItem[0].updated = moment(getItem[0].updated).format('DD-MM-YYYY')
     getItem[0].created = moment(getItem[0].created).format('DD-MM-YYYY')
 
