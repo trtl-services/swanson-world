@@ -25,7 +25,6 @@ block content
 		.column
 			.box.has-background-white
 
-
 	br
 
 	h1.is-size-4.title.is Balance History
@@ -36,21 +35,30 @@ block content
 				thead.has-background-light
 					tr
 						th.has-text-centered
-							abbr(title='Name') Event
+							abbr(title='Type') Type
 						th.has-text-centered
-							abbr(title='Price') Progress
+							abbr(title='Amount') Amount
 						th.has-text-centered
-							abbr(title='Views') Status
+							abbr(title='Confirms') Confirms
 						th.has-text-centered
-							abbr(title='Purchases') Date
+							abbr(title='Date') Date
 							
 				tbody
 					each tx in txs
 						tr
-							th.has-text-centered.has-text-weight-light=tx.name
-							th.has-text-centered.has-text-weight-light=item.price
 							th.has-text-centered.has-text-weight-light
-							
+								if tx.type === 'in'
+									.tag.is-success(style='width: 50px;')=tx.type
+								else
+									.tag.is-danger(style='width: 50px;')=tx.type
+							th.has-text-centered.has-text-weight-light=tx.amount
+							th.has-text-centered.has-text-weight-light
+								if tx.confirms >= confirms
+									.tag.is-success(style='width: 75px;') confirmed
+								else
+									.tag.is-warning(style='width: 75px;')=tx.confirms
+							th.has-text-centered.has-text-weight-light=tx.created
+
 			if txs && txs.length <= 0
 				p.has-text-centered
 					| You have no transaction history.

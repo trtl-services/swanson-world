@@ -13,14 +13,26 @@ const moment = require('moment')
 router.get('/', permission(), async function(req, res, next) {
   try {
 
+    // Get transactions that are not present in the order table (must be withraws/deposits)
     const getTxs = await db('transactions')
-    .select()
-    .where('userId', req.user.id)
+    .leftJoin('orders', function () {
+      this
+        .on('transactions.transactionHash', 'orders.transactionHash')
+    })
+    .select('transactions.*')
+    .where('transactions.userId', req.user.id)
+    .whereNull('orders.transactionHash')
+
+    getTxs.forEach(function(tx) {
+      tx.amount = tx.amount.toFixed(2)
+      tx.created = moment(tx.created).format('YYYY-MM-DD')
+    })
 
     res.render('dashboard', {
       title: 'Dashboard',
       user: (req.user) ? req.user : undefined,
-      txs: getTxs
+      txs: getTxs,
+      confirms: process.env.CONFIRMS
     })
   } catch (err) {
     next(err)
