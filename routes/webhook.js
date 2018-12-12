@@ -5,44 +5,199 @@
 
 const express = require('express')
 const router = express.Router()
-const permission = require('permission')
 const db = require('../utils/utils').knex
-const { check } = require('express-validator/check')
-const validateInput = require('../middleware/validateInput')
 const moment = require('moment')
 
-// Market View
-router.get('/:id',
-[
-  check('id')
-  .not().isEmpty()
-  .isInt()
-],
-validateInput,
-async function(req, res, next) {
+// Webhook
+router.post('/', setHeader, async function (req, res) {
   try {
+    if (req.headers['authorization'] != process.env.WEBHOOK_TOKEN) {
+      throw ('Incorrect access token.')
+    }
 
-    const getItem = await db('items')
-    .leftJoin('users', 'users.id', 'items.userId')
-    .select('users.username', 'items.id', 'items.name', 'items.description', 'items.price', 'items.overview', 'items.license', 'items.views', 'items.purchases', 'items.updated', 'items.created', 'items.reviewed')
-    .where('items.id', req.params.id)
-    .whereNot('items.deleted', 1)
-    //.whereNot('items.reviewed', 0)
-    .limit(1)
+    else if (req.query.type === 'send') {
 
-    getItem[0].price =  getItem[0].price.toFixed(2)
-    getItem[0].updated = moment(getItem[0].updated).format('DD-MM-YYYY')
-    getItem[0].created = moment(getItem[0].created).format('DD-MM-YYYY')
+      const getUser = await db('users')
+      .select('id')
+      .where('address', req.body.addressFrom)
+      .limit(1)
 
-    res.render('public/item', {
-      title: getItem[0].name,
-      user: (req.user) ? req.user : undefined,
-      marked: require('marked'),
-      item: getItem[0]
+      const insertTx = await db('transactions')
+      .insert({
+          userId: getUser[0].id,
+          type: 'out',
+          amount: req.body.description,
+          amount: req.body.amount,
+          fee: +req.body.fee + +req.body.sfee, 
+          transactionHash: req.body.transactionHash,
+          confirms: req.body.confirms
+        })
+
+      // Update balance
+      const getAddress = await TS.getAddress(req.body.addressFrom)
+
+      await db('users')
+      .update({
+        availableBalance: getAddress.availableBalance,
+        lockedBalance: getAddress.lockedBalance
+      })
+      .where('id', getUser[0].id)
+      .limit(1)
+        
+      // Log Withdrawal 
+      await db('activity')
+      .insert({
+        userId: req.user.id,
+        txId: insertTx[0],
+        method: 'withdraw',
+        status: 'completed',
+        notify: 1
+      })
+
+    }
+    else if (req.query.type === 'receive') {
+
+      const getUser = await db('users')
+      .select('id')
+      .where('address', req.body.addressFrom)
+      .limit(1)
+
+      const insertTx = await db('transactions')
+      .insert({
+          userId: getUser[0].id,
+          type: 'in',
+          amount: req.body.description,
+          amount: req.body.amount,
+          fee: +req.body.fee + +req.body.sfee, 
+          transactionHash: req.body.transactionHash,
+          confirms: req.body.confirms
+        })
+
+      // Update balance
+      const getAddress = await TS.getAddress(req.body.address)
+
+      await db('users')
+      .update({
+        availableBalance: getAddress.availableBalance,
+        lockedBalance: getAddress.lockedBalance
+      })
+      .where('id', getUser[0].id)
+      .limit(1)
+        
+      // Log Deposit 
+      await db('activity')
+      .insert({
+        userId: req.user.id,
+        txId: insertTx[0],
+        method: 'deposit',
+        status: 'completed',
+        notify: 1
+      })
+    }
+    else if (req.query.type === 'confirm') {
+
+      const getTx = await db('transactions')
+        .join('users', 'transactions.userId', 'users.id')
+        .select('transactions.id', 'transactions.userId', 'users.address')
+        .where('transactionHash', req.body.transactionHash)
+        .where('transactions.type', req.body.type)
+        .limit(1)
+
+        if (getTx.length >= 1) {
+
+          // Update Confirm
+          await db('transactions')
+            .update({
+              confirms: req.body.confirms
+            })
+            .where('id', getTx[0].id)
+            .limit(1)
+  
+          // If required confirms passed 
+          if (req.body.confirms >= process.env.CONFIRMS) {
+  
+            // Update balance
+            const getAddress = await TS.getAddress(getTx[0].address)
+  
+            await db('users')
+            .update({
+              availableBalance: getAddress.availableBalance,
+              lockedBalance: getAddress.lockedBalance
+            })
+            .where('id', getTx[0].userId)
+            .limit(1)
+
+            //Update Tx
+            const viewTx = await TS.getTransfer(req.body.transactionHash)
+  
+            const result = viewTx.filter(tx => {
+              return tx.type === req.body.type
+            })
+  
+            await db('transactions')
+            .update({
+              confirms: result[0].confirms
+            })
+            .where('id', getTx[0].id)
+            .limit(1)
+  
+            // Log Confirm
+            await db('activity')
+            .insert({
+              userId: getTx[0].userId,
+              txId: getTx[0].id,
+              method: 'confirm',
+              status: 'completed',
+            })
+          }
+        } 
+    }
+    else if (req.query.type === 'failure') {
+
+      const getTx = await db('transactions')
+      .join('users', 'transactions.accountId', 'users.id')
+      .select('transactions.id', 'transactions.userId', 'users.address')
+      .where('transactionHash', req.body.transactionHash)
+      .where('transactions.type', req.body.type)
+      .limit(1)
+
+    if (getTx.length >= 1) {
+
+      // Delete Tx
+      await db('transactions')
+      .update({
+        deleted: 1
+      })
+      .where('id', getTx[0].id)
+      .limit(1)
+
+      // Log Delete
+      await db('activity')
+      .update({
+        method: 'failed',
+        status: 'completed',
+      })
+      .where('transactionId',getTx[0].id)
+
+      // Update balance
+      const getAddress = await TS.getAddress(getTx[0].address)
+
+      await db('users')
+      .update({
+        availableBalance: getAddress.availableBalance,
+        lockedBalance: getAddress.lockedBalance
+      })
+      .where('id', getTx[0].userId)
+      .limit(1)
+      }
+    }
+
+    res.status(201).json({
+      status: true
     })
   }
   catch(err) {
-    next(err)
+    res.status(500).json(err)
   }
 })
 
