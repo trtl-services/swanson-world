@@ -6,6 +6,7 @@
 const express = require('express')
 const router = express.Router()
 const db = require('../utils/utils').knex
+const setHeader = require('../middleware/setHeader')
 const moment = require('moment')
 
 // Webhook

@@ -33,7 +33,6 @@ async function(req, res, next) {
 
     const sfee = await TS.getFee(getItem[0].price)
     getItem[0].price = (getItem[0].price + sfee + 0.1).toFixed(2)
-
     getItem[0].updated = moment(getItem[0].updated).format('DD-MM-YYYY')
     getItem[0].created = moment(getItem[0].created).format('DD-MM-YYYY')
 

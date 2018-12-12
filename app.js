@@ -129,6 +129,7 @@ const browse = require('./routes/browse')
 const view = require('./routes/view')
 const settings = require('./routes/settings')
 const activity = require('./routes/activity')
+const webhook = require('./routes/webhook')
 
 app.use('/welcome', welcome)
 app.use('/dashboard', verifyUser, dashboard)
@@ -139,8 +140,7 @@ app.use('/purchase', verifyUser, purchase)
 app.use('/items', verifyUser, items)
 app.use('/settings', verifyUser, settings)
 app.use('/activity', verifyUser, activity)
-
-
+app.use('/webhook', webhook)
 
 // Set Public index
 app.get('/', function (req, res) {

@@ -9,7 +9,7 @@ block content
 			.box.has-background-white.has-text-centered
 				p.is-size-5 To purchase this item, click the button below to continue.
 		
-			form(action='' method='post')
+			form(action='/purchase' method='post')
 				input(type='hidden' name='id' value=item.id)
 				button.button.is-large.is-success.is-fullwidth(type='submit' style='padding:20px 0 60px 0;') Buy Now
 		.column.is-one-third

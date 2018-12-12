@@ -25,7 +25,7 @@ async function(req, res, next) {
   try {
 
     const getItem = await db('items')
-    .select('name', 'description', 'price', 'license', 'purchases', 'updated', 'reviewed')
+    .select('id', 'name', 'description', 'price', 'license', 'purchases', 'updated', 'reviewed')
     .where('id', req.params.id)
     .whereNot('deleted', 1)
     //.whereNot('reviewed', 0)
@@ -51,7 +51,7 @@ async function(req, res, next) {
 })
 
 
-// Market View
+// Purchase Item
 router.post('/', permission(),
 [
   check('id')
@@ -62,6 +62,7 @@ validateInput,
 async function(req, res, next) {
   try {
 
+    console.log(req.body)
     const getItem = await db('items')
     .select('userId', 'price')
     .where('id', req.body.id)
@@ -88,11 +89,19 @@ async function(req, res, next) {
       transactionHash: createTransfer.transactionHash
     })
 
+    
+    //Update Purchase count
+    await db('items')
+    .update({
+      purchases: db.raw('purchases + ?', [1])
+    })
+    .where('id', req.body.id)
+    .limit(1)
+
     req.flash('success', 'Transaction send. Download will be available upon ' + process.env.CONFIRMS + ' confirms.')
     res.redirect('/view/' + req.body.id)
   } catch (err) {
-    console.log(err)
-    req.flash('error', err)
+    req.flash('error', err.error)
     res.redirect('/view/' + req.body.id)
   }
 })
