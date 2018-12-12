@@ -8,7 +8,7 @@ block content
 	.columns
 		.column
 			.box.has-background-white
-				table.table.is-fullwidth.is-responsive
+				table.table.is-fullwidth.is-responsive.is-size-5
 					tbody
 						tr
 							td.has-text-weight-bold Balance
@@ -18,9 +18,9 @@ block content
 							td.has-text-right=user.lockedBalance.toFixed(2)
 				.columns
 					.column
-						button.button.modal-button.is-fullwidth.is-dark.is-outlined(data-target='withdrawBalance') Withdraw
+						button.button.is-medium.modal-button.is-fullwidth.is-dark.is-outlined(data-target='withdrawBalance') Withdraw
 					.column
-						button.button.modal-button.is-fullwidth.is-dark.is-outlined(data-target='depositBalance') Deposit
+						button.button.is-medium.modal-button.is-fullwidth.is-dark.is-outlined(data-target='depositBalance') Deposit
 
 		.column
 			.box.has-background-white
