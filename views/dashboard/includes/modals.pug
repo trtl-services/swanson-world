@@ -6,15 +6,49 @@
 			p.modal-card-title Deposit Address
 			span.delete(aria-label='close')
 		section.modal-card-body
-			input.input.is-medium.is-primary(value=user.address disabled)
+			input.input.is-medium.is-primary(type='text' value=user.address disabled)
 		footer.modal-card-foot
 
 .modal#withdrawBalance
 	.modal-background
 	.modal-card
-		header.modal-card-head
-			p.modal-card-title Withdraw Balance
-			span.delete(aria-label='close')
-		section.modal-card-body
+		form(action='/transfer' method='post')
 
-		footer.modal-card-foot
+			header.modal-card-head
+				p.modal-card-title Withdraw Balance
+				span.delete(aria-label='close')
+			section.modal-card-body
+				.field.is-horizontal
+					.field-label.is-normal
+						label.label Address
+					.field-body
+						.field
+							.control
+								input.input.is-medium(type='text' name='address')
+
+
+				.field.is-horizontal
+					.field-label.is-normal
+						label.label Amount
+					.field-body
+						.field
+							.control
+								input.input.is-medium(type='number' name='amount')
+				
+
+				.field.is-horizontal
+					.field-label.is-normal
+						label.label Fee
+					.field-body
+						.field
+							.control
+								input.input.is-medium(type='number' name='fee' min=0 step=0.01 value=0.10)
+			
+				if user.verified === 1
+					.field.is-horizontal
+						.field-label.is-normal
+							.control
+								input.input.is-medium.is-fullwidth.has-text-centered(type='text' name='token' placeholder='000000')
+
+			footer.modal-card-foot
+				button.button.is-success.is-fullwidth.is-medium(type='submit') Withdraw
